@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="mb-4 text-end">
+            <h3 class="text-primary">Welcome, {{ user.username }}!</h3>
+        </div>
+
+        <!-- URL Shortener Form -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <strong>Shorten a New URL</strong>
+            </div>
+            <div class="card-body">
+                <form method="post" class="row g-3">
+                    {% csrf_token %}
+                    <div class="col-md-10">
+                        <input type="url" class="form-control" name="original_url" placeholder="Enter long URL" required>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-success w-100">Shorten</button>
+                    </div>
+                </form>
+
+                {% if short_url %}
+                    <div class="alert alert-info mt-3">
+                        Shortened URL: <a href="{{ short_url }}" target="_blank">{{ short_url }}</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- URL Table -->
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <strong>Your Shortened URLs</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped mb-0 text-center align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>User ID</th>
+                                <th>Original URL</th>
+                                <th>Shortened URL</th>
+                                <th>Clicks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for url in urls %}
+                                <tr>
+                                    <td>{{ url.user.id }}</td>
+                                    <td><a href="{{ url.original_url }}" target="_blank">{{ url.original_url }}</a></td>
+                                    <td><a href="{{ url.get_short_url }}" target="_blank">{{ url.get_short_url }}</a></td>
+                                    <td>{{ url.click_count }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-muted">No URLs yet.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+   </body>
+{% endblock %}
